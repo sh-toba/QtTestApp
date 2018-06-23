@@ -27,11 +27,11 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     networksetting.cpp \
     system.cpp \
-    myutills.cpp
+    utills.cpp
 
 HEADERS  += mainwindow.h \
-    myutills.h \
     system.h \
-    networksetting.h
+    networksetting.h \
+    utills.h
 
 FORMS    += mainwindow.ui

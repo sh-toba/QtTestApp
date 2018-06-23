@@ -16,14 +16,16 @@ NetworkSetting::~NetworkSetting(){
 }
 
 int NetworkSetting::_LoadConnectInfo(){
-    int ret = _sys.NMGetConnectInfo(_state, _nwci_list, _connected_idx);
+    int ret = _sys.NMUpdateInfo(_nwci_list);
     return ret;
 }
+
 
 int NetworkSetting::_ScanSSID(){
     int ret = _sys.NMGetSSIDList(_ssid_list);
     return ret;
 }
+
 
 Utills::NetworkState NetworkSetting::GetState(){
     return _state;
@@ -31,10 +33,6 @@ Utills::NetworkState NetworkSetting::GetState(){
 
 vector<Utills::NetworkConnectInfo> NetworkSetting::GetNWCIList(){
     return _nwci_list;
-}
-
-int NetworkSetting::GetConnectedIdx(){
-    return _connected_idx;
 }
 
 vector<string> NetworkSetting::GetSSIDList(){

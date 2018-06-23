@@ -6,25 +6,47 @@ int main(int argc, char *argv[])
 
     QCoreApplication a(argc, argv);
 
+    //vector<string> tmp;
+    //string src = "ABCD       tEFGH\tIJK";
+    //Utills::SplitString(src, " ", tmp);
+
+    /* *
+     *Systemクラスのテスト
+     * ・lsコマンドの送信
+     * */
+    cout << "----------Test System Class---------" << endl;
     System sys;
-    sys.WriteBuffConsole("ls -l");
+    sys.CMD_Test("ls -l");
+    cout << "------------------------------------" << endl;
 
-    /*
-    while(true){
-        std::cout << ">> Please Input Command." << std::endl;
-
-        std::string cmd_str;
-        std::cin >> cmd_str;
-
-        //
-
-        std::cout << ">> Please Input 'R', if you wish continue." << std::endl;
-        std::string s;
-        std::cin >> s;
-        if(s != "R") break;
+    /* *
+     * Systemクラスのテスト
+     * ・nmcliステータス確認
+     * ・nmcli設定
+     * */
+    cout << "----------Test System Class---------" << endl;
+    cout << ">> Show Network Information" << endl;
+    vector<Utills::NetworkConnectInfo> nwci_list;
+    sys.NMUpdateInfo(nwci_list);
+    for(auto it = nwci_list.begin();it != nwci_list.end(); it++){
+        if(it == nwci_list.begin()){
+            (*it).Show();
+            continue;
+        }
+        (*it).Show(false);
     }
-    std::cout << ">> End of main function." << std::endl;
-*/
+    cout << ">> Show SSID " << endl;
+    vector<string> ssid_list;
+    sys.NMGetSSIDList(ssid_list);
+    Utills::ShowStringVector(ssid_list);
+    cout << "------------------------------------" << endl;
+
+   /* *
+    * NetworkSettingクラスのテスト
+    *
+    *
+    * */
+
     //return 0;
     return a.exec();
 }

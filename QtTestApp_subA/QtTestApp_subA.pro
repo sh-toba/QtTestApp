@@ -10,7 +10,7 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    ../QtTestApp_main/myutills.cpp \
+    ../QtTestApp_main/utills.cpp \
     ../QtTestApp_main/networksetting.cpp \
     ../QtTestApp_main/system.cpp
 
@@ -27,7 +27,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 INCLUDEPATH += ../QtTestApp_main
 
 HEADERS += \
-    ../QtTestApp_main/myutills.h \
+    ../QtTestApp_main/utills.h \
     ../QtTestApp_main/networksetting.h \
     ../QtTestApp_main/system.h
 
