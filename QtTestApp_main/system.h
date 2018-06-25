@@ -3,15 +3,14 @@
 
 #include "utills.h"
 
-#define MAX_BUFFER_LENGTH 1024
 #define CMD_TIMEOUT_MSEC 100
 
 #define DEVICE_ETHER string("eth0")
 #define DEVICE_WIFI string("wlan0")
 #define CMD_NETWORK_REBOOT string("sudo /etc/init.d/networking restart")
 #define CMD_NETWORK_MANAGE string("nmcli")
-#define NOINFORMATION string("--")
-#define CMD_STDOUT_DELIMITER string("  ")
+#define CMD_STDOUT_DELIMITER ' '
+#define CMD_STDOUT_DELIMITER_R 2
 
 class System{
 
@@ -29,9 +28,6 @@ private:
     int NMReboot();
     int NMGetConnectionName(vector<tuple<string, bool>>& con_list);
     int NMGetConnectionInfo(const string conname, Utills::NetworkConnectInfo& nwci);
-    int NMConnectDelete(string conname);
-    int NMConnectUp(string conname);
-    int NMConnectDown(string conname);
 
     string NMCordinateOpt(Utills::NetworkConnectInfo nwci);
 
@@ -40,15 +36,18 @@ public:
     System();
     ~System();
 
-    // ネットワーク関連API
-
-    // ネットワーク情報を最新にする
+    // 接続情報を最新にする
     int NMUpdateInfo(vector<Utills::NetworkConnectInfo>& nwci_list);
     // SSIDを取得する
     int NMGetSSIDList(vector<string>& ssid_list);
-    // 接続を編集する（追加 兼 編集）
-    int NMConnectionEdit(Utills::NetworkConnectInfo nwci, string pass = "--");
-
+    // 接続情報を編集する（追加 兼 編集）
+    int NMConnectionEdit(Utills::NetworkConnectInfo nwci, string pass = NOINFORMATION);
+    // 接続情報を削除する
+    int NMConnectDelete(string conname);
+    // 接続を確立する
+    int NMConnectUp(string conname);
+    // 接続を切断する
+    int NMConnectDown(string conname);
     // デバッグ用 - 送信したコマンドの標準出力を受けとってコンソール表示
     int CMD_Test(string cmd_str);
 
