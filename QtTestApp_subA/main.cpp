@@ -60,8 +60,8 @@ int main(int argc, char *argv[])
     gateway = "192.168.10.1";
     dns = "192.168.10.1";
 
-    ssid = "aterm-1c06cb-g";
-    pass = "15708631c027f";
+    ssid = "hfuhiuhfiaudh";
+    pass = "fjiofauh";
 
     cout << ">> Ethernet DHCP設定" << endl;
     conname = "MyEtherDHCP";
