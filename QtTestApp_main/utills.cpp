@@ -1,25 +1,109 @@
 #include "utills.h"
 
+//-----NetworkIPInfo
+Utills::NetworkIPInfo::NetworkIPInfo(){
+    Clear();
+}
+
+Utills::NetworkIPInfo::NetworkIPInfo(bool is_dhcp,string ip, string gw, string dns){
+    Set(is_dhcp, ip, gw, dns);
+}
+
+Utills::NetworkIPInfo::~NetworkIPInfo(){}
+
+
+void Utills::NetworkIPInfo::Set(bool is_dhcp, string ip, string gw, string dns){
+    _is_dhcp = is_dhcp;
+    _ip = ip;
+    _gateway = gw;
+    _dns = dns;
+}
+
+void Utills::NetworkIPInfo::Clear(){
+    _is_dhcp = true;
+    _ip = NOINFORMATION;
+    _gateway = NOINFORMATION;
+    _dns = NOINFORMATION;
+
+}
+
+
+void Utills::NetworkIPInfo::Show(bool with_header){
+
+    string delim = "\t";
+
+    if(with_header){
+        vector<string> headers;
+        // ヘッダーの整形
+        headers.push_back("DHCP");
+        headers.push_back("IP");
+        headers.push_back("GATEWAY");
+        headers.push_back("DNS");
+
+        cout << Utills::MergeString(headers, delim) << endl;
+    }
+
+    vector<string> elements;
+    if(this->_is_dhcp)
+        elements.push_back("Yes");
+    else
+        elements.push_back("No");
+    elements.push_back(this->_ip);
+    elements.push_back(this->_gateway);
+    elements.push_back(this->_dns);
+
+    cout << Utills::MergeString(elements, delim) << endl;
+    return;
+}
+
+
+//-----End of NetworkIPInfo Class
+
+
+//-----NetoworkConnectInfo
+
 Utills::NetworkConnectInfo::NetworkConnectInfo(){
-
+      Clear();
 }
 
-Utills::NetworkConnectInfo::NetworkConnectInfo(string conname, string ifname, bool is_dhcp, string ip, string gateway, string dns, string ssid){
-    Set(conname, ifname, is_dhcp, ip, gateway, dns, ssid);
+Utills::NetworkConnectInfo::NetworkConnectInfo(string conname, string ifname, string net_type, bool is_dhcp, string ip, string gateway, string dns, string ssid){
+    Set(conname, ifname, net_type, is_dhcp, ip, gateway, dns, ssid);
 }
+
+Utills::NetworkConnectInfo::NetworkConnectInfo(string conname, string ifname, string net_type, NetworkIPInfo net_ipinfo, string ssid){
+    Set(conname, ifname, net_type, net_ipinfo._is_dhcp, net_ipinfo._ip, net_ipinfo._gateway, net_ipinfo._dns, ssid);
+}
+
 
 Utills::NetworkConnectInfo::~NetworkConnectInfo(){
-
 }
 
-void Utills::NetworkConnectInfo::Set(string conname, string ifname, bool is_dhcp, string ip, string gateway, string dns, string ssid){
+void Utills::NetworkConnectInfo::Set(string conname, string net_type, string ifname, bool is_dhcp, string ip, string gateway, string dns, string ssid){
     _conname = conname;
     _ifname = ifname;
+    _net_type = net_type;
     _is_dhcp = is_dhcp;
     _ip = ip;
     _gateway = gateway;
     _dns = dns;
     _ssid = ssid;
+    _state = false;
+}
+
+void Utills::NetworkConnectInfo::Set(string conname, string net_type, string ifname, NetworkIPInfo net_ipinfo, string ssid){
+    Set(conname, ifname, net_type, net_ipinfo._is_dhcp, net_ipinfo._ip, net_ipinfo._gateway, net_ipinfo._dns, ssid);
+}
+
+
+void Utills::NetworkConnectInfo::Clear(){
+    _conname = NOINFORMATION;
+    _ifname = NOINFORMATION;
+    _net_type = NOINFORMATION;
+    _is_dhcp = false;
+    _ip = NOINFORMATION;
+    _gateway = NOINFORMATION;
+    _dns = NOINFORMATION;
+    _ssid = NOINFORMATION;
     _state = false;
 }
 
@@ -32,6 +116,7 @@ void Utills::NetworkConnectInfo::Show(bool with_header){
         // ヘッダーの整形
         headers.push_back("Name");
         headers.push_back("Device");
+        headers.push_back("Type");
         headers.push_back("DHCP");
         headers.push_back("IP");
         headers.push_back("GATEWAY");
@@ -45,6 +130,7 @@ void Utills::NetworkConnectInfo::Show(bool with_header){
     vector<string> elements;
     elements.push_back(this->_conname);
     elements.push_back(this->_ifname);
+    elements.push_back(this->_net_type);
     if(this->_is_dhcp)
         elements.push_back("Yes");
     else
@@ -62,6 +148,10 @@ void Utills::NetworkConnectInfo::Show(bool with_header){
     return;
 }
 
+//-----End of NetworkConnectInfo Class
+
+
+// 汎用関数群
 
 string Utills::DoubleQuatationString(string src){
     return "\"" + src + "\"";
@@ -112,7 +202,7 @@ void Utills::SplitStringSpecial(string src, vector<string> &result, const char d
 
     string buff = "";
     int counter = 0;
-    for(int i = 0; i < src.size(); i++){
+    for(unsigned int i = 0; i < src.size(); i++){
 
         // delim以外の文字が来たとき
         if(src[i] != delim){

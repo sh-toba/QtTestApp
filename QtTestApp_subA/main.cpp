@@ -1,6 +1,9 @@
 #include <QCoreApplication>
 #include "system.h"
-#include "networksetting.h";
+#include "networksetting.h"
+
+using namespace Utills;
+using namespace Systems;
 
 int main(int argc, char *argv[])
 {
@@ -12,23 +15,26 @@ int main(int argc, char *argv[])
     //Utills::SplitString(src, " ", tmp);
 
     /* *
-     *Systemクラスのテスト
+     *Commandクラスのテスト
      * ・lsコマンドの送信
      * */
-    cout << "----------Test System Class---------" << endl;
-    System sys;
-    sys.CMD_Test("ls -l");
+    cout << "----------Test Command Class---------" << endl;
+    Command cmd;
+    cmd.CMD_Test("ls -l");
 
     cout << "------------------------------------" << endl << endl;
 
+    //return 0;
+
     /* *
-     * Systemクラスのテスト
+     * NetworkManagerクラスのテスト
      * ・nmcliステータス確認
      * */
-    cout << "----------Test System Class---------" << endl;
+    cout << "----------Test NetworkManager Class---------" << endl;
+    NetworkManager nm;
     cout << ">> Show Network Information" << endl;
     vector<Utills::NetworkConnectInfo> nwci_list;
-    sys.NMUpdateInfo(nwci_list);
+    nm.UpdateInfo(nwci_list);
     for(auto it = nwci_list.begin();it != nwci_list.end(); it++){
         if(it == nwci_list.begin()){
             (*it).Show();
@@ -38,74 +44,44 @@ int main(int argc, char *argv[])
     }
     cout << ">> Show SSID " << endl;
     vector<string> ssid_list;
-    sys.NMGetSSIDList(ssid_list);
+    nm.GetSSIDList(ssid_list);
     Utills::ShowStringVector(ssid_list);
     cout << "------------------------------------" << endl << endl;
 
    /* *
     * NetworkSettingクラスのテスト
+    * ・初期化テスト
+    * ・Ethernet接続テスト
     * */
     cout << "----------Test NetworkSetting Class---------" << endl;
     NetworkSetting ns;
-    ns.ConnectionReset(); // 接続情報のリセット
-    ns.ShowMemberValues();
 
-    cout << "<<<< Test Case Start >>>>" << endl;
-    // 接続プロパティ
-    Utills::NetworkConnectInfo nwci;
-    string conname, ifname, ip, gateway, dns, ssid, pass;
-    bool is_dhcp;
+    // 初期状態の確認
+    ns.ShowState();
+    ns.ShowSSIDList();
 
-    ip = "192.168.10.111";
-    gateway = "192.168.10.1";
-    dns = "192.168.10.1";
+    // 接続情報の削除
+    ns.Reset();
+    ns.ShowState(NetworkType::ETHERNET);
 
-    ssid = "hfuhiuhfiaudh";
-    pass = "fjiofauh";
-
-    cout << ">> Ethernet DHCP設定" << endl;
-    conname = "MyEtherDHCP";
-    ifname = DEVICE_ETHER;
-    is_dhcp = true;
-    nwci.Set(conname, ifname, is_dhcp);
-    ns.ConnectionEdit(nwci);
-    ns.ShowMemberValues();
-
-    cout << ">> Ethernet 固定IP 設定" << endl;
-    conname = "EtherFixIP";
-    ifname = DEVICE_ETHER;
-    is_dhcp = false;
-    nwci.Set(conname, ifname, is_dhcp, ip, gateway, dns);
-    ns.ConnectionEdit(nwci);
-    ns.ShowMemberValues();
-
-    cout << ">> Wifi DHCP設定" << endl;
-    conname = "WifiDHCP";
-    ifname = DEVICE_WIFI;
-    is_dhcp = true;
-    nwci.Set(conname, ifname, is_dhcp, NOINFORMATION, NOINFORMATION, NOINFORMATION, ssid);
-    ns.ConnectionEdit(nwci, pass);
-    ns.ShowMemberValues();
-
-    cout << ">> Wifi 固定IP設定" << endl;
-    conname = "WifiFixIP";
-    ifname = DEVICE_WIFI;
-    is_dhcp = false;
-    nwci.Set(conname, ifname, is_dhcp, ip, gateway, dns, ssid);
-    ns.ConnectionEdit(nwci, pass);
-    ns.ShowMemberValues();
-
-    cout << ">> 切り替え" << endl;
-    ns.Connect(3);
-    ns.ShowMemberValues();
-
-    cout << ">> 削除" << endl;
-    ns.ConnectionDelete(3);
-    ns.ShowMemberValues();
-
-    cout << ">> 切断" << endl;
-    ns.DisConnect(1);
-    ns.ShowMemberValues();
+    // Ethernet接続操作テスト
+    // 接続
+    NetworkIPInfo net_ipinfo;
+    bool is_dhcp = true;
+    net_ipinfo.Set(is_dhcp);
+    ns.Connect(NetworkType::ETHERNET, net_ipinfo);
+    ns.ShowState(NetworkType::ETHERNET);
+    // 切断
+    ns.DisConnect(NetworkType::ETHERNET);
+    ns.ShowState(NetworkType::ETHERNET);
+    // 再接続
+    ns.Connect(NetworkType::ETHERNET, net_ipinfo);
+    ns.ShowState(NetworkType::ETHERNET);
+    // 固定IP設定
+    //string ip = "172.26.18.111", gateway = "172.26.18.254", dns = "150.61.227.17";
+    //net_ipinfo.Set(false, ip, gateway, dns);
+    //ns.Connect(NetworkType::ETHERNET, net_ipinfo);
+    //ns.ShowState(NetworkType::ETHERNET);
 
     cout << "------------------------------------" << endl << endl;
 

@@ -4,22 +4,20 @@
 #include "utills.h"
 #include "system.h"
 
+using namespace Utills;
+using namespace Systems;
+
 class NetworkSetting{
 
-public :
-    System _sys;
-    Utills::NetworkState _state; // 接続状態
-    vector<Utills::NetworkConnectInfo> _nwci_list; // 接続情報リスト
+private :
+    NetworkManager _nm; // ネットワークマネージャクラス
+    // デバイス名、接続状態、IPアドレス
+    map<NetworkType, tuple<string, NetworkState, NetworkIPInfo>> _state; // 接続状態
+    string _target_ssid; // 接続するSSID
     vector<string> _ssid_list; // SSIDリスト
 
-private:
-    bool _CheckStr_IP(string ip);
-    bool _CheckStr_GateWay(string gateway);
-    bool _CheckStr_DNS(string dns);
-
-    bool _CheckExist_ConName(string name);
-
-    int _UpdateInfo();
+private :
+    int _UpdateState();
     int _ScanSSID();
 
 public :
@@ -27,31 +25,34 @@ public :
     ~NetworkSetting();
 
     // 初期化
-    void Init();
+    int Init();
 
     // API用Get関数
-    Utills::NetworkState GetState(); // 接続状態
-    vector<Utills::NetworkConnectInfo> GetNWCIList(); // 接続情報のリストを取得
-    vector<string> GetSSIDList(); // SSIDのリストの取得
+    NetworkState GetState(NetworkType net_type); // 接続状態
+    NetworkIPInfo GetIPInfo(NetworkType net_type); // IPアドレス情報
+    vector<string> GetSSIDList(); // SSIDのリスト取得
 
     // ネットワーク設定操作
-    int ConnectionEdit(Utills::NetworkConnectInfo nwci, string pass=NOINFORMATION); // 新しい接続情報の追加（Wifi用）
-
-    int Connect(int idx); // 指定したインデックスの接続情報で接続
-    int DisConnect(int idx); // 切断
-    int ConnectionDelete(int idx); // 接続設定削除
-    int ConnectionReset(); // 初期化
+    int Connect(NetworkType net_type, NetworkIPInfo net_ipinfo, string ssid=NOINFORMATION, string pass=NOINFORMATION);
+    int DisConnect(NetworkType net_type); // 切断
+    int Reset(); // 接続状態の初期化
 
     // デバッグ用
-    void ShowMemberValues();
+    void ShowState();
+    void ShowState(NetworkType net_type);
+    void ShowSSIDList();
 
 };
 
 #endif // NETWORKSETTING_H
 
 /* *
- * ハードウェアはether,wifiともにひとつずつ仮定
- * いろんな接続ケースがあると仮定して、接続情報をユーザ指定の接続名で管理できるようにする。
+ * （方針や仕様など）
+ * NetworkManagerをGUIで使いやすい形に包括したつもりのクラス
+ * 接続名称はUtillsで定義のデバイス名（インターフェース名）で固定にして設定する。
+ * 　　・Systemクラスでは接続名単位で接続情報を設定できるが、ここではEther用, WiFi用で大別する。
+ * インターフェースはether,wifiともにひとつずつと仮定。インターフェース名称も固定値で設定されているものとする。
+ *
  * ConnectionEditといいつつ、一旦接続情報を削除して再作成している。（同接続名の回避）
  * 一旦、同接続名の判定はせず、同じ接続名にした場合上書きされる仕様とする。
  * wifiのパスは情報としてプログラム内部では持たない。

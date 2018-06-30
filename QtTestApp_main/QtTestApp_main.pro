@@ -28,13 +28,17 @@ SOURCES += main.cpp\
     networksetting.cpp \
     system.cpp \
     utills.cpp \
-    dialog.cpp
+    logger.cpp \
+    networksettingwindow.cpp
 
 HEADERS  += mainwindow.h \
     system.h \
     networksetting.h \
     utills.h \
-    dialog.h
+    logger.h \
+    networksettingwindow.h
+
 
 FORMS    += mainwindow.ui \
-    dialog.ui
+    networksettingwindow.ui
+

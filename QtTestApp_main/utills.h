@@ -9,46 +9,91 @@
 #include <stdlib.h>
 #include <vector>
 #include <tuple>
+#include <time.h>
+
+using namespace std;
 
 #define MAX_BUFFER_LENGTH 1024
 #define NOINFORMATION string("--")
 
-using namespace std;
+#define ENUM_STRING(var)
+
+// #define DEVICE_ETHER string("eth0") // 未使用
+// #define DEVICE_WIFI string("wlan0") // 未使用
+
+#define CMD_TIMEOUT_MSEC 100
+#define CMD_STDOUT_DELIMITER ' '
+#define CMD_STDOUT_DELIMITER_R 2
 
 namespace Utills {
 
-class NetworkConnectInfo{
 
-public :
-    string _conname;
-    string _ifname;
+// 固定IP接続用の設定情報(IPv4) - NetwarkSettingクラス以上で扱う
+class NetworkIPInfo{
 
-    bool _is_dhcp;
+public:
+    bool _is_dhcp; // DHCP
+    string _ip; // IPアドレス(IPv4)
+    string _gateway; // ゲートウェイ(IPv4)
+    string _dns; // DHSサーバー(IPv4)
 
-    string _ip;
-    string _gateway;
-    string _dns;
+    NetworkIPInfo();
+    NetworkIPInfo(bool is_dhcp, string ip=NOINFORMATION, string gw=NOINFORMATION, string dns=NOINFORMATION);
+    ~NetworkIPInfo();
 
-    string _ssid;
+    void Set(bool is_dhcp, string ip=NOINFORMATION, string gw=NOINFORMATION, string dns=NOINFORMATION);
+    void Clear();
 
-    bool _state;
 
-    NetworkConnectInfo();
-    NetworkConnectInfo(string conname, string ifname, bool is_dhcp, string ip = NOINFORMATION, string gateway = NOINFORMATION, string dns = NOINFORMATION, string ssid = NOINFORMATION);
-    ~NetworkConnectInfo();
-
-    void Set(string conname, string ifname, bool is_dhcp, string ip = NOINFORMATION, string gateway = NOINFORMATION, string dns = NOINFORMATION, string ssid = NOINFORMATION);
+    // デバッグ用
     void Show(bool with_header=true);
 };
 
+// ネットワーク接続で必要となる情報 - Systemクラスで扱う
+class NetworkConnectInfo{
+
+public :
+    string _conname; // 接続名
+    string _ifname; // インターフェース名
+    string _net_type; // ネットワークタイプ
+    bool _is_dhcp; // DHCP
+    string _ip; // IPアドレス(IPv4)
+    string _gateway; // ゲートウェイ(IPv4)
+    string _dns; // DHSサーバー(IPv4)
+    string _ssid; // SSID(WiFiのみ必要)
+    bool _state; // 接続状態
+
+    NetworkConnectInfo();
+    NetworkConnectInfo(string conname, string ifname, string net_type, bool is_dhcp, string ip = NOINFORMATION, string gateway = NOINFORMATION, string dns = NOINFORMATION, string ssid = NOINFORMATION);
+    NetworkConnectInfo(string conname, string ifname, string net_type, NetworkIPInfo net_ipinfo, string ssid=NOINFORMATION);
+    ~NetworkConnectInfo();
+
+    void Set(string conname, string ifname, string net_type, bool is_dhcp, string ip = NOINFORMATION, string gateway = NOINFORMATION, string dns = NOINFORMATION, string ssid = NOINFORMATION);
+    void Set(string conname, string ifname, string net_type, NetworkIPInfo net_ipinfo, string ssid=NOINFORMATION);
+
+    void Clear();
+
+    // デバッグ用
+    void Show(bool with_header=true);
+};
+
+// 接続タイプ
+enum NetworkType{
+    ETHERNET,
+    WIFI,
+    MISC,
+};
+
+// 接続状態
 enum NetworkState{
     DISCONNECT,
-    CONNECT
+    CONNECTED,
+    UNAVAILABLE,
 };
 
 
-/* *
- * std::string系 汎用関数群
+/* * std::string系 汎用関数群
+ *
  *
  * */
 
@@ -60,8 +105,18 @@ void SplitString(string src, const string& delim, vector<string>& result);
 void SplitStringSpecial(string src,  vector<string>& result, const char delim = ' ', const int repeat = 1);
 // 文字列合成
 string MergeString(const vector<string> src, const string delim);
-// vectorリストの表示
+// vector<string>のリストの表示
 void ShowStringVector(const vector<string> src, bool with_no=true);
+
+
+/* * GUI入力規則のチェック関連
+ *
+ * */
+
+bool CheckStr_IP(string ip); // 未実装
+bool CheckStr_GateWay(string gateway); // 未実装
+bool CheckStr_DNS(string dns); // 未実装
+
 
 }
 

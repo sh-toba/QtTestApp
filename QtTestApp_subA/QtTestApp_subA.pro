@@ -12,7 +12,8 @@ TEMPLATE = app
 SOURCES += main.cpp \
     ../QtTestApp_main/utills.cpp \
     ../QtTestApp_main/networksetting.cpp \
-    ../QtTestApp_main/system.cpp
+    ../QtTestApp_main/system.cpp \
+    ../QtTestApp_main/logger.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -29,5 +30,6 @@ INCLUDEPATH += ../QtTestApp_main
 HEADERS += \
     ../QtTestApp_main/utills.h \
     ../QtTestApp_main/networksetting.h \
-    ../QtTestApp_main/system.h
+    ../QtTestApp_main/system.h \
+    ../QtTestApp_main/logger.h
 
