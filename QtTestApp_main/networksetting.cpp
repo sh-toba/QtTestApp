@@ -1,7 +1,7 @@
-#include "networksetting.h"
+﻿#include "networksetting.h"
 
 NetworkSetting::NetworkSetting(){
-    Init();
+    //Init();
 }
 
 NetworkSetting::~NetworkSetting(){
@@ -28,7 +28,7 @@ int NetworkSetting::_UpdateState(){
         // 更新
         get<1>(_state[net_type]) = tmp_state;
         get<2>(_state[net_type]).Set(tmp_nwci._is_dhcp, tmp_nwci._ip, tmp_nwci._gateway, tmp_nwci._dns);
-        if(net_type == NetworkType::WIFI) _target_ssid = tmp_nwci._ssid; // SSID
+        //if(net_type == NetworkType::WIFI) _target_ssid = tmp_nwci._ssid; // SSID
     }
 
     return ret;
@@ -42,6 +42,8 @@ int NetworkSetting::_ScanSSID(){
 
 
 int NetworkSetting::Init(){
+
+    LOG_DEBUG("%s","");
 
     int ret;
 
@@ -72,17 +74,43 @@ int NetworkSetting::Init(){
     ret = _UpdateState();
     ret = _ScanSSID();
 
+    LOG_DEBUG("%s","Initialization Complete");
+
     return ret;
 }
 
 
+NetworkState NetworkSetting::GetState(const NetworkType& net_type){
+
+    LOG_DEBUG("%s",Utills::ToString(net_type).c_str());
+
+    return get<1>(_state[net_type]);
+}
+
+NetworkIPInfo NetworkSetting::GetIPInfo(const NetworkType& net_type){
+
+    LOG_DEBUG("%s",Utills::ToString(net_type).c_str());
+
+    return get<2>(_state[net_type]);
+}
+
 vector<string> NetworkSetting::GetSSIDList(){
+
+    LOG_DEBUG("%s","");
+
     _ScanSSID(); // 再スキャンする
     return _ssid_list;
 }
 
+string NetworkSetting::GetTargetSSID(){
+    return _target_ssid;
+}
 
-int NetworkSetting::Connect(NetworkType net_type, NetworkIPInfo net_ipinfo, string ssid, string pass){
+
+int NetworkSetting::Connect(const NetworkType& net_type, const NetworkIPInfo& net_ipinfo, const string& ssid, const string& pass){
+
+    LOG_DEBUG("%s", "");
+    //LOG_DEBUG("nettype:%s|ipinfo:%s|ssid:%s", Utills::ToString(net_type).c_str(), (net_ipinfo.ToLineString()).c_str(), ssid.c_str());
 
     int ret;
 
@@ -105,6 +133,7 @@ int NetworkSetting::Connect(NetworkType net_type, NetworkIPInfo net_ipinfo, stri
     }
     else if(net_type == NetworkType::WIFI){
         nwci.Set(ifname, ifname, net_type_str, net_ipinfo, ssid);
+        _target_ssid = ssid;
         ret = _nm.ConnectionEdit(nwci, pass);
     }
     else{
@@ -117,10 +146,14 @@ int NetworkSetting::Connect(NetworkType net_type, NetworkIPInfo net_ipinfo, stri
     // 接続状態の更新
     ret = _UpdateState();
 
+    LOG_DEBUG("%s", "Connect Complete");
+
     return ret;
 }
 
-int NetworkSetting::DisConnect(NetworkType net_type){
+int NetworkSetting::DisConnect(const NetworkType& net_type){
+
+    LOG_DEBUG("%s", Utills::ToString(net_type).c_str());
 
     int ret;
 
@@ -132,10 +165,14 @@ int NetworkSetting::DisConnect(NetworkType net_type){
     // 接続状態の更新
     ret = _UpdateState();
 
+    LOG_DEBUG("%s", "DisConnect Complete");
+
     return ret;
 }
 
 int NetworkSetting::Reset(){
+
+    LOG_DEBUG("%s","");
 
     int ret;
 
@@ -155,6 +192,8 @@ int NetworkSetting::Reset(){
     // 接続状態の更新
     ret = Init();
 
+    LOG_DEBUG("%s", "Reset Complete");
+
     return ret;
 }
 
@@ -169,14 +208,14 @@ void NetworkSetting::ShowState(){
         cout << "State : " << get<1>(_state[net_type]) << endl;
         cout << "IPv4 Information : " << endl;
         get<2>(_state[net_type]).Show();
-        if(net_type == NetworkType::WIFI) cout << "SSID : " << _target_ssid << endl;
+        //if(net_type == NetworkType::WIFI) cout << "SSID : " << _target_ssid << endl;
     }
     cout << endl;
 
     return;
 }
 
-void NetworkSetting::ShowState(NetworkType net_type){
+void NetworkSetting::ShowState(const NetworkType& net_type){
 
     cout << "=========NetworkSetting::ShowState===========" << endl;
     cout << "NetworkType : " << net_type << endl;

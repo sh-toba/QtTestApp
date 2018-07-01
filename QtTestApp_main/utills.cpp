@@ -1,4 +1,4 @@
-#include "utills.h"
+﻿#include "utills.h"
 
 //-----NetworkIPInfo
 Utills::NetworkIPInfo::NetworkIPInfo(){
@@ -27,6 +27,10 @@ void Utills::NetworkIPInfo::Clear(){
 
 }
 
+string Utills::NetworkIPInfo::ToLineString(){
+    string ret_str = (_is_dhcp) ? "DHCP=ON" : "DHCP=OFF";
+    return ret_str + ",IP=" + _ip + ",GATEWAY=" + _gateway + ",DNS=" + _dns;
+}
 
 void Utills::NetworkIPInfo::Show(bool with_header){
 
@@ -151,9 +155,37 @@ void Utills::NetworkConnectInfo::Show(bool with_header){
 //-----End of NetworkConnectInfo Class
 
 
+// ToString関数
+string Utills::ToString(const NetworkType &net_type){
+    switch(net_type){
+    case NetworkType::ETHERNET:
+        return "ethernet";
+    case NetworkType::WIFI:
+        return "wifi";
+    default:
+        return "unknown";
+    }
+}
+
+string Utills::ToString(const NetworkState &net_state){
+
+    switch(net_state){
+    case NetworkState::CONNECTED:
+        return "接続中";
+    case NetworkState::DISCONNECT:
+        return "未接続";
+    case NetworkState::UNAVAILABLE:
+        return "利用不可";
+    default:
+        return "unknown";
+    }
+
+}
+
+
 // 汎用関数群
 
-string Utills::DoubleQuatationString(string src){
+string Utills::DoubleQuatationString(const string& src){
     return "\"" + src + "\"";
 }
 
@@ -228,7 +260,7 @@ void Utills::SplitStringSpecial(string src, vector<string> &result, const char d
     return;
 }
 
-string Utills::MergeString(const vector<string> src, const string delim){
+string Utills::MergeString(const vector<string>& src, const string& delim){
 
     string result = *src.begin();
 
@@ -240,7 +272,7 @@ string Utills::MergeString(const vector<string> src, const string delim){
     return result;
 }
 
-void Utills::ShowStringVector(const vector<string> src, bool with_no){
+void Utills::ShowStringVector(const vector<string>& src, const bool& with_no){
 
     int count = 0;
     for(auto it = src.begin(); it != src.end(); it++){
@@ -249,4 +281,9 @@ void Utills::ShowStringVector(const vector<string> src, bool with_no){
         cout << *it << endl;
     }
     return;
+}
+
+
+bool Utills::CheckStr_NoInfo(const string &src){
+    return src == NOINFORMATION;
 }

@@ -29,16 +29,19 @@ SOURCES += main.cpp\
     system.cpp \
     utills.cpp \
     logger.cpp \
-    networksettingwindow.cpp
+    networkmenudialog.cpp \
+    networksettingdialog.cpp
 
 HEADERS  += mainwindow.h \
     system.h \
     networksetting.h \
     utills.h \
     logger.h \
-    networksettingwindow.h
+    networkmenudialog.h \
+    networksettingdialog.h
 
 
 FORMS    += mainwindow.ui \
-    networksettingwindow.ui
+    networkmenudialog.ui \
+    networksettingdialog.ui
 

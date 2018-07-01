@@ -1,4 +1,4 @@
-#ifndef LOGGER_H
+﻿#ifndef LOGGER_H
 #define LOGGER_H
 
 #include <stdarg.h>
@@ -12,7 +12,7 @@
 #define FORMAT_STR_TIME "%02d:02d:02d"
 #define FORMAT_STR_TIME_MSEC "%02d:%02d:%02d.%06d"
 #define LOG_DIR std::string("/var/log/test/")
-#define LOG_LEVEL LogLevel::Info
+#define LOG_LEVEL LogLevel::Debug
 
 class LogLevel
 {

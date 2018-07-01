@@ -1,4 +1,4 @@
-#include "system.h"
+﻿#include "system.h"
 
 // Command Class
 
@@ -6,7 +6,7 @@ Systems::Command::Command(){}
 Systems::Command::~Command(){}
 
 // protected method
-int Systems::Command::_send_cmd(string cmd_str){
+int Systems::Command::_send_cmd(const string& cmd_str){
 
     //cout << ">> $ " << cmd_str << endl;
     LOG_INFO("%s", cmd_str.c_str());
@@ -32,7 +32,7 @@ void Systems::Command::_clear_buff(){
 }
 
 // For Debug
-int Systems::Command::CMD_Test(string cmd_str){
+int Systems::Command::CMD_Test(const string& cmd_str){
 
     _send_cmd(cmd_str);
     for(auto it = _cmd_buff.begin(); it != _cmd_buff.end(); it++)
@@ -95,7 +95,7 @@ int Systems::NetworkManager::GetConnectionName(vector<tuple<string, bool>> &con_
     return ret;
 }
 
-string Systems::NetworkManager::CordinateOpt(string mode, Utills::NetworkConnectInfo nwci){
+string Systems::NetworkManager::CordinateOpt(const string& mode, const NetworkConnectInfo& nwci){
 
     string opt = "";
 
@@ -135,7 +135,9 @@ string Systems::NetworkManager::CordinateOpt(string mode, Utills::NetworkConnect
 }
 
 // public method
-int Systems::NetworkManager::GetDeviceName(const NetworkType net_type, string &ifname){
+int Systems::NetworkManager::GetDeviceName(const NetworkType& net_type, string &ifname){
+
+    LOG_INFO("%s", Utills::ToString(net_type).c_str());
 
     int ret;
 
@@ -143,17 +145,7 @@ int Systems::NetworkManager::GetDeviceName(const NetworkType net_type, string &i
     ifname = NOINFORMATION;
 
     // 標準出力に対応した名前に変換
-    string net_type_str = NOINFORMATION;
-    switch(net_type){
-    case NetworkType::ETHERNET:
-        net_type_str = "ethernet";
-        break;
-    case NetworkType::WIFI:
-        net_type_str = "wifi";
-        break;
-    default:
-        return -1;
-    }
+    string net_type_str = Utills::ToString(net_type);
 
     // コマンド整形・送信
     string cmd = string(CMD_NETWORK_MANAGE) + " -f DEVICE,TYPE device";
@@ -182,10 +174,15 @@ int Systems::NetworkManager::GetDeviceName(const NetworkType net_type, string &i
     }
 
     _clear_buff();
+
+    //LOG_INFO("return ifname:%s", ifname.c_str());
+
     return ret;
 }
 
-int Systems::NetworkManager::GetDeviceState(const string ifname, NetworkState &state){
+int Systems::NetworkManager::GetDeviceState(const string& ifname, NetworkState &state){
+
+    LOG_INFO("%s", ifname.c_str());
 
     int ret;
 
@@ -228,7 +225,9 @@ int Systems::NetworkManager::GetDeviceState(const string ifname, NetworkState &s
     return ret;
 }
 
-int Systems::NetworkManager::GetConnectionInfo(const string conname, NetworkConnectInfo &nwci){
+int Systems::NetworkManager::GetConnectionInfo(const string& conname, NetworkConnectInfo &nwci){
+
+    LOG_INFO("%s", conname.c_str());
 
     int ret;
     string cmd;
@@ -312,6 +311,8 @@ int Systems::NetworkManager::GetConnectionInfo(const string conname, NetworkConn
 
 int Systems::NetworkManager::GetSSIDList(vector<string> &ssid_list){
 
+    LOG_INFO("%s", "");
+
     int ret;
 
     // 初期化
@@ -341,7 +342,9 @@ int Systems::NetworkManager::GetSSIDList(vector<string> &ssid_list){
     return ret;
 }
 
-int Systems::NetworkManager::UpdateInfo(vector<Utills::NetworkConnectInfo> &nwci_list){
+int Systems::NetworkManager::UpdateInfo(vector<NetworkConnectInfo> &nwci_list){
+
+    LOG_INFO("%s", "");
 
     int ret;
     string cmd;
@@ -373,7 +376,9 @@ int Systems::NetworkManager::UpdateInfo(vector<Utills::NetworkConnectInfo> &nwci
 }
 
 
-int Systems::NetworkManager::ConnectionEdit(Utills::NetworkConnectInfo nwci, string pass){
+int Systems::NetworkManager::ConnectionEdit(const NetworkConnectInfo& nwci, const string& pass){
+
+    LOG_INFO("%s", "");
 
     int ret;
 
@@ -406,7 +411,9 @@ int Systems::NetworkManager::ConnectionEdit(Utills::NetworkConnectInfo nwci, str
     return ret;
 }
 
-int Systems::NetworkManager::ConnectDelete(string conname){
+int Systems::NetworkManager::ConnectDelete(const string& conname){
+
+    LOG_INFO("%s", conname.c_str());
 
     int ret;
 
@@ -416,7 +423,11 @@ int Systems::NetworkManager::ConnectDelete(string conname){
     return ret;
 }
 
-int Systems::NetworkManager::ConnectUp(string conname){
+int Systems::NetworkManager::ConnectUp(const string& conname){
+
+    LOG_INFO("%s", conname.c_str());
+
+    LOG_INFO("%s", conname.c_str());
 
     int ret;
 
@@ -426,7 +437,9 @@ int Systems::NetworkManager::ConnectUp(string conname){
     return ret;
 }
 
-int Systems::NetworkManager::ConnectDown(string conname){
+int Systems::NetworkManager::ConnectDown(const string& conname){
+
+    LOG_INFO("%s", conname.c_str());
 
     int ret;
 

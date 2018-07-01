@@ -19,11 +19,11 @@ class Command{
 
 protected:
     // 読み込んだコマンドの標準出力の一時保存（一行づつ）
-    vector<string> _cmd_buff;
+    std::vector<string> _cmd_buff;
 
 protected:
     // コマンド送信
-    int _send_cmd(string cmd_str);
+    int _send_cmd(const string& cmd_str);
     // バッファ開放
     void _clear_buff();
 
@@ -33,7 +33,7 @@ public:
     ~Command();
 
     // デバッグ用 - 送信したコマンドの標準出力を受けとって再表示
-    int CMD_Test(string cmd_str);
+    int CMD_Test(const string& cmd_str);
 };
 
 
@@ -55,7 +55,7 @@ private:
     bool _ConnectionNameExist(); // 未実装。
 
     // network-managerのオプション形成
-    string CordinateOpt(string mode, NetworkConnectInfo nwci);
+    string CordinateOpt(const string& mode, const NetworkConnectInfo& nwci);
 
 public:
 
@@ -63,11 +63,11 @@ public:
     ~NetworkManager();
 
     // 指定したタイプのデバイス名を返す
-    int GetDeviceName(const NetworkType net_type, string& ifname);
+    int GetDeviceName(const NetworkType& net_type, string& ifname);
     // 指定したデバイス名の接続状態を返す
-    int GetDeviceState(const string ifname, NetworkState& state);
+    int GetDeviceState(const string& ifname, NetworkState& state);
     // 指定した接続名の情報を返す
-    int GetConnectionInfo(const string conname, NetworkConnectInfo& nwci);
+    int GetConnectionInfo(const string& conname, NetworkConnectInfo& nwci);
     // SSIDを取得する
     int GetSSIDList(vector<string>& ssid_list);
     // 接続情報を最新にする
@@ -75,13 +75,13 @@ public:
     int UpdateInfo(vector<NetworkConnectInfo>& nwci_list);
 
     // 接続情報を編集する（追加 兼 編集）
-    int ConnectionEdit(NetworkConnectInfo nwci, string pass = NOINFORMATION);
+    int ConnectionEdit(const NetworkConnectInfo& nwci, const string& pass = NOINFORMATION);
     // 接続情報を削除する
-    int ConnectDelete(string conname);
+    int ConnectDelete(const string& conname);
     // 接続を確立する
-    int ConnectUp(string conname);
+    int ConnectUp(const string& conname);
     // 接続を切断する
-    int ConnectDown(string conname);
+    int ConnectDown(const string& conname);
 
 };
 

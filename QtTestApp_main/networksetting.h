@@ -1,6 +1,7 @@
-#ifndef NETWORKSETTING_H
+﻿#ifndef NETWORKSETTING_H
 #define NETWORKSETTING_H
 
+#include <QString>
 #include "utills.h"
 #include "system.h"
 
@@ -28,18 +29,19 @@ public :
     int Init();
 
     // API用Get関数
-    NetworkState GetState(NetworkType net_type); // 接続状態
-    NetworkIPInfo GetIPInfo(NetworkType net_type); // IPアドレス情報
+    NetworkState GetState(const NetworkType& net_type); // 接続状態
+    NetworkIPInfo GetIPInfo(const NetworkType& net_type); // IPアドレス情報
+    string GetTargetSSID(); // 接続対象のSSIDを返す
     vector<string> GetSSIDList(); // SSIDのリスト取得
 
     // ネットワーク設定操作
-    int Connect(NetworkType net_type, NetworkIPInfo net_ipinfo, string ssid=NOINFORMATION, string pass=NOINFORMATION);
-    int DisConnect(NetworkType net_type); // 切断
+    int Connect(const NetworkType& net_type, const NetworkIPInfo& net_ipinfo, const string& ssid=NOINFORMATION, const string& pass=NOINFORMATION);
+    int DisConnect(const NetworkType& net_type); // 切断
     int Reset(); // 接続状態の初期化
 
     // デバッグ用
     void ShowState();
-    void ShowState(NetworkType net_type);
+    void ShowState(const NetworkType& net_type);
     void ShowSSIDList();
 
 };

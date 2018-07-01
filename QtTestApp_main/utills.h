@@ -1,4 +1,4 @@
-#ifndef UTILLS_H
+﻿#ifndef UTILLS_H
 #define UTILLS_H
 
 #include <map>
@@ -44,8 +44,8 @@ public:
     void Set(bool is_dhcp, string ip=NOINFORMATION, string gw=NOINFORMATION, string dns=NOINFORMATION);
     void Clear();
 
-
     // デバッグ用
+    string ToLineString();
     void Show(bool with_header=true);
 };
 
@@ -91,6 +91,12 @@ enum NetworkState{
     UNAVAILABLE,
 };
 
+/* *ToString関数
+ * Network関連で上記を上手くまとめられると良かった
+ * */
+
+string ToString(const NetworkType& net_type);
+string ToString(const NetworkState& net_state);
 
 /* * std::string系 汎用関数群
  *
@@ -98,15 +104,15 @@ enum NetworkState{
  * */
 
 // 文字列を二重引用符で囲んで返す
-string DoubleQuatationString(string src);
+string DoubleQuatationString(const string& src);
 // 文字列分割
 void SplitString(string src, const string& delim, vector<string>& result);
 // 文字列分割 - 「指定数以上delimが続く」条件で分割する。delimもすべて消去される。
 void SplitStringSpecial(string src,  vector<string>& result, const char delim = ' ', const int repeat = 1);
 // 文字列合成
-string MergeString(const vector<string> src, const string delim);
+string MergeString(const vector<string>& src, const string& delim);
 // vector<string>のリストの表示
-void ShowStringVector(const vector<string> src, bool with_no=true);
+void ShowStringVector(const vector<string>& src, const bool& with_no=true);
 
 
 /* * GUI入力規則のチェック関連
@@ -116,7 +122,7 @@ void ShowStringVector(const vector<string> src, bool with_no=true);
 bool CheckStr_IP(string ip); // 未実装
 bool CheckStr_GateWay(string gateway); // 未実装
 bool CheckStr_DNS(string dns); // 未実装
-
+bool CheckStr_NoInfo(const string& src);
 
 }
 
