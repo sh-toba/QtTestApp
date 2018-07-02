@@ -60,6 +60,8 @@ void NetworkMenuDialog::DisConnectWiFi(){
 }
 void NetworkMenuDialog::StartofProcess(NetworkType net_type, ProcessState ps){
 
+    LOG_DEBUG("%s", "");
+
     // ボタンをロックする
     _ButtonControl(true);
 
@@ -67,16 +69,18 @@ void NetworkMenuDialog::StartofProcess(NetworkType net_type, ProcessState ps){
     switch(net_type){
     case NetworkType::ETHERNET:
         ui->EtherState->setText(_ToString(ps));
-        return;
+        break;
     case NetworkType::WIFI:
         ui->WiFiState->setText(_ToString(ps));
-        return;
+        break;
     default:
-        return;
+        break;
     }
 
 }
 void NetworkMenuDialog::EndofProcess(){
+
+    LOG_DEBUG("%s", "");
 
     // ボタンをアンロックする
     _ButtonControl(false);
@@ -92,12 +96,16 @@ void NetworkMenuDialog::OpenNetworkSettingDialog(NetworkType net_type){
 
     LOG_DEBUG("%s", "");
 
-    bool connect_request = false;
+    NetworkIPInfo net_ipinfo;
+    string ssid = NOINFORMATION;
+    string pass = NOINFORMATION;
 
-    NetworkSettingDialog nsDialog(net_type, this->_ns);
+    NetworkSettingDialog nsDialog(net_type, this->_ns, &net_ipinfo, &ssid, &pass);
 
     // 設定が済んだら接続処理を行う
     if(nsDialog.exec()){
+
+        LOG_DEBUG("%s", "accepts");
 
         // 接続要求があれば
         //if(connect_request){
@@ -105,17 +113,7 @@ void NetworkMenuDialog::OpenNetworkSettingDialog(NetworkType net_type){
             // 切断処理開始のシグナルを送る
             emit ProcessStart(net_type, ProcessState::P_CONNECT);
 
-            /* 入力内容を受け取る
-            NetworkIPInfo net_ipinfo;
-            bool is_dhcp = true;
-
-            if(is_dhcp)
-                net_ipinfo.Set(is_dhcp);
-            else{
-                string ip = ;
-                string gateway = ;
-                string dns = ;
-            }*/
+            _ns.Connect(net_type, net_ipinfo, ssid, pass);
 
             emit ProcessEnd();
         //}
@@ -137,6 +135,7 @@ void NetworkMenuDialog::DisConnectNetwork(NetworkType net_type){
         emit ProcessStart(net_type, ProcessState::P_DISCONNECT);
 
         _ns.DisConnect(net_type);
+        QThread::sleep(10);
 
         // 処理終了のシグナルを送る
         emit ProcessEnd();
@@ -174,6 +173,8 @@ QString NetworkMenuDialog::_ToString(ProcessState ps){
 }
 
 void NetworkMenuDialog::_ButtonControl(bool locked){
+
+    LOG_DEBUG("%d", locked);
 
     ui->EtherConnectButton->setEnabled(!locked);
     ui->WiFiConnectButton->setEnabled(!locked);

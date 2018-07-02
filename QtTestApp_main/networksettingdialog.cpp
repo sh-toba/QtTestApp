@@ -1,13 +1,18 @@
 ﻿#include "networksettingdialog.h"
 #include "ui_networksettingdialog.h"
 
-NetworkSettingDialog::NetworkSettingDialog(NetworkType net_type, const NetworkSetting& ns, QWidget *parent) :
+NetworkSettingDialog::NetworkSettingDialog(NetworkType net_type, NetworkSetting& ns, NetworkIPInfo *ipinfo, string *ssid, string *pass,QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NetworkSettingDialog)
 {
     ui->setupUi(this);
 
     LOG_DEBUG("%s", "");
+
+    this->_mode = net_type;
+    this->_net_ipinfo = ipinfo;
+    this->_ssid = ssid;
+    this->_pass = pass;
 
     // 各オブジェクトの動作定義
     connect(ui->DHCPCheckButton, &QRadioButton::clicked, this, &NetworkSettingDialog::DHCPOptionChanged);
@@ -37,7 +42,7 @@ NetworkSettingDialog::NetworkSettingDialog(NetworkType net_type, const NetworkSe
         for(auto it = ssid_list.begin(); it != ssid_list.end(); it++)
             ui->SelectSSIDBox->addItem(QString::fromStdString(*it));
 
-        string target_ssid = na.GetTagetSSID();
+        string target_ssid = ns.GetTargetSSID();
         if(!Utills::CheckStr_NoInfo(target_ssid))
             ui->SelectSSIDBox->setCurrentText(QString::fromStdString(target_ssid));
     }
@@ -56,7 +61,20 @@ void NetworkSettingDialog::DHCPOptionChanged(){
 
 void NetworkSettingDialog::ConnectRequest(){
 
+    // 情報書き込み
+    bool is_dhcp = ui->DHCPCheckButton->isChecked();
+    if(is_dhcp)
+        _net_ipinfo->Set(is_dhcp);
+    else{
+        _net_ipinfo->Set(is_dhcp, ui->IPEdit->text().toStdString(), ui->GatewayEdit->text().toStdString(), ui->DNSEdit->text().toStdString());
+    }
+    if(_mode == NetworkType::WIFI){
+        *_ssid = ui->SelectSSIDBox->currentText().toStdString();
+        *_pass = ui->PasswordEdit->text().toStdString();
+    }
+
     // 入力内容のチェック処理
+    // IPInfoクラスの中でやりたい
 
     this->accept();
 }

@@ -12,8 +12,16 @@ class NetworkSettingDialog : public QDialog
 {
     Q_OBJECT
 
+private:
+    NetworkType _mode;
+
 public:
-    explicit NetworkSettingDialog(NetworkType net_type, const NetworkSetting& ns, QWidget *parent = 0);
+    NetworkIPInfo *_net_ipinfo;
+    string *_ssid;
+    string *_pass;
+
+public:
+    explicit NetworkSettingDialog(NetworkType net_type, NetworkSetting& ns, NetworkIPInfo *ipinfo, string *ssid, string *pass,QWidget *parent = 0);
     ~NetworkSettingDialog();
 
 private slots:

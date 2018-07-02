@@ -2,6 +2,7 @@
 #define NETWORKMENUDIALOG_H
 
 #include <QDialog>
+#include <QThread>
 #include "networksetting.h"
 
 QT_BEGIN_NAMESPACE
