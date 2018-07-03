@@ -4,7 +4,7 @@
 #include "networkmenudialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent, Qt::FramelessWindowHint),
+    QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -14,6 +14,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    LOG_DEBUG("%s", "---------- MainWindow Destructer ----------");
+
+    //delete _ns;
     delete ui;
 }
 
@@ -23,8 +26,11 @@ void MainWindow::_Initialize(){
 
     LOG_DEBUG("%s", "");
 
+    // インスタンス生成
+    //_ns = new NetworkSetting;
+
     // ネットワーク設定初期化
-    _ns.Init();
+    //_ns->Init();
 
     // イベント作成
     connect(ui->QuitButton, &QPushButton::clicked, this, &MainWindow::close); // アプリ終了
@@ -37,7 +43,7 @@ void MainWindow::OpenNetworkMenuDialog(){
 
     LOG_DEBUG("%s", "");
 
-    NetworkMenuDialog nmDialog(this->_ns);
+    NetworkMenuDialog nmDialog;
 
     if(nmDialog.exec()){
 

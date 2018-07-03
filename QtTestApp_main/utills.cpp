@@ -171,7 +171,7 @@ string Utills::ToString(const NetworkState &net_state){
 
     switch(net_state){
     case NetworkState::CONNECTED:
-        return "接続中";
+        return "接続済み";
     case NetworkState::DISCONNECT:
         return "未接続";
     case NetworkState::UNAVAILABLE:

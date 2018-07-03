@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -17,7 +17,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    NetworkSetting _ns;
+    //NetworkSetting* _ns;
 
 public:
     explicit MainWindow(QWidget *parent = 0);

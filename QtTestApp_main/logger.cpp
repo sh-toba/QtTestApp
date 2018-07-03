@@ -1,4 +1,4 @@
-#include "logger.h"
+﻿#include "logger.h"
 
 std::string getDateNow(){
 
@@ -45,6 +45,7 @@ void write_log(const LogLevel::type& logLevel, const char* fileName, const char*
     ofs.open(LOG_DIR + getDateNow() + ".log", std::ios::app);
 
     ofs << getTimeNow() << " "
+        << "(" << QThread::currentThreadId() << ")"
         << "[" << LogLevel::ToString(logLevel) << "]"
         << "[" << fileName << "]"
         << "[" << funcName << "]"

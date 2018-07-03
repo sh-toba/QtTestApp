@@ -3,27 +3,38 @@
 
 #include "networksettingdialog.h"
 
-NetworkMenuDialog::NetworkMenuDialog(NetworkSetting& ns, QWidget *parent) :
+NetworkMenuDialog::NetworkMenuDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::NetworkMenuDialog)
+    ui(new Ui::NetworkMenuDialog),
+    _ns(new NetworkSetting),
+    _processThread(new QThread(this))
 {
     ui->setupUi(this);
 
-    _ns = ns;
     _Initialize();
 }
 
 NetworkMenuDialog::~NetworkMenuDialog()
 {
+    LOG_DEBUG("%s", "Close NetworkMenu Dialog");
+
+    _processThread->exit();
+    _processThread->wait();
     delete ui;
+    //delete _processThread;
 }
 
 void NetworkMenuDialog::_Initialize(){
 
     LOG_DEBUG("%s", "");
 
-    // 接続状態の更新
-    _UpdateState();
+    // スロット・シグナル対象外オブジェクトに対するおまじない
+    qRegisterMetaType<NetworkType>("NetworkType");
+    qRegisterMetaType<NetworkIPInfo>("NetworkIPInfo");
+    qRegisterMetaType<string>("string");
+
+    // ネットワーク設定クラスをスレッドに登録する
+    _ns->moveToThread(_processThread);
 
     // 接続ボタン動作
     connect(ui->EtherConnectButton, &QPushButton::clicked, this, &NetworkMenuDialog::ConnectEther);
@@ -34,9 +45,24 @@ void NetworkMenuDialog::_Initialize(){
     // 閉じるボタン動作
     connect(ui->CloseButton, &QPushButton::clicked, this, &NetworkMenuDialog::close);
 
+    // 接続・切断要求
+    connect(this, &NetworkMenuDialog::ConnectRequest, _ns, &NetworkSetting::Connect);
+    connect(this, &NetworkMenuDialog::DisConnectRequest, _ns, &NetworkSetting::DisConnect);
+
     // プロセス開始・終了処理 (主にボタン制御)
     connect(this, &NetworkMenuDialog::ProcessStart, this, &NetworkMenuDialog::StartofProcess);
-    connect(this, &NetworkMenuDialog::ProcessEnd, this, &NetworkMenuDialog::EndofProcess);
+    connect(_ns, &NetworkSetting::ProcessDone, this, &NetworkMenuDialog::EndofProcess);
+
+    // スレッド終了処理 - スレッド終了とともに登録したインスタンを破棄
+    connect(_processThread, &QThread::finished, _ns, &NetworkSetting::deleteLater);
+
+    _processThread->start();
+
+    // 初期化
+    _ns->Init();
+
+    // 接続状態の更新
+    _UpdateState();
 
     return;
 }
@@ -107,16 +133,10 @@ void NetworkMenuDialog::OpenNetworkSettingDialog(NetworkType net_type){
 
         LOG_DEBUG("%s", "accepts");
 
-        // 接続要求があれば
-        //if(connect_request){
+        // 切断処理開始のシグナルを送る
+        emit ProcessStart(net_type, ProcessState::P_CONNECT);
 
-            // 切断処理開始のシグナルを送る
-            emit ProcessStart(net_type, ProcessState::P_CONNECT);
-
-            _ns.Connect(net_type, net_ipinfo, ssid, pass);
-
-            emit ProcessEnd();
-        //}
+        emit ConnectRequest(net_type, net_ipinfo, ssid, pass);
     }
 
     LOG_DEBUG("%s", "Completed");
@@ -129,16 +149,16 @@ void NetworkMenuDialog::DisConnectNetwork(NetworkType net_type){
     LOG_DEBUG("%s", "");
 
     // 接続中のときのみ実行
-    if(_ns.GetState(net_type) == NetworkState::CONNECTED){
+    if(_ns->GetState(net_type) == NetworkState::CONNECTED){
 
         // 切断処理開始のシグナルを送る
         emit ProcessStart(net_type, ProcessState::P_DISCONNECT);
 
-        _ns.DisConnect(net_type);
-        QThread::sleep(10);
+        //_ns->DisConnect(net_type);
+        emit DisConnectRequest(net_type);
 
         // 処理終了のシグナルを送る
-        emit ProcessEnd();
+        //emit ProcessEnd();
     }
 
     LOG_DEBUG("%s", "Completed");
@@ -157,7 +177,7 @@ void NetworkMenuDialog::_UpdateState(){
 
 QString NetworkMenuDialog::_CreateLabel(NetworkType net_type){
 
-    QString label = QString::fromStdString(Utills::ToString(_ns.GetState(net_type)));
+    QString label = QString::fromStdString(Utills::ToString(_ns->GetState(net_type)));
     return label;
 }
 

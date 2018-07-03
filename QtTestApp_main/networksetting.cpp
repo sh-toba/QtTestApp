@@ -1,11 +1,11 @@
 ﻿#include "networksetting.h"
 
-NetworkSetting::NetworkSetting(){
-    //Init();
+NetworkSetting::NetworkSetting(QObject *parent) : QObject(parent)
+{
 }
 
-NetworkSetting::~NetworkSetting(){
-
+NetworkSetting::~NetworkSetting()
+{
 }
 
 
@@ -107,7 +107,7 @@ string NetworkSetting::GetTargetSSID(){
 }
 
 
-int NetworkSetting::Connect(const NetworkType& net_type, const NetworkIPInfo& net_ipinfo, const string& ssid, const string& pass){
+int NetworkSetting::Connect(NetworkType net_type, NetworkIPInfo net_ipinfo, string ssid, string pass){
 
     LOG_DEBUG("%s", "");
     //LOG_DEBUG("nettype:%s|ipinfo:%s|ssid:%s", Utills::ToString(net_type).c_str(), (net_ipinfo.ToLineString()).c_str(), ssid.c_str());
@@ -146,12 +146,14 @@ int NetworkSetting::Connect(const NetworkType& net_type, const NetworkIPInfo& ne
     // 接続状態の更新
     ret = _UpdateState();
 
+    emit ProcessDone();
+
     LOG_DEBUG("%s", "Connect Complete");
 
     return ret;
 }
 
-int NetworkSetting::DisConnect(const NetworkType& net_type){
+int NetworkSetting::DisConnect(NetworkType net_type){
 
     LOG_DEBUG("%s", Utills::ToString(net_type).c_str());
 
@@ -164,6 +166,8 @@ int NetworkSetting::DisConnect(const NetworkType& net_type){
 
     // 接続状態の更新
     ret = _UpdateState();
+
+    emit ProcessDone();
 
     LOG_DEBUG("%s", "DisConnect Complete");
 

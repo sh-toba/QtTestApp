@@ -10,6 +10,9 @@
 #include <vector>
 #include <tuple>
 #include <time.h>
+#include <QThread>
+#include <QString>
+#include <QPalette>
 
 using namespace std;
 

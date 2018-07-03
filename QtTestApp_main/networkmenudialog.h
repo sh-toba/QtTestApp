@@ -2,7 +2,6 @@
 #define NETWORKMENUDIALOG_H
 
 #include <QDialog>
-#include <QThread>
 #include "networksetting.h"
 
 QT_BEGIN_NAMESPACE
@@ -18,19 +17,24 @@ class NetworkMenuDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit NetworkMenuDialog(NetworkSetting& ns, QWidget *parent = 0);
+    explicit NetworkMenuDialog(QWidget *parent = 0);
     ~NetworkMenuDialog();
 
-    NetworkSetting _ns;
+    NetworkSetting* _ns;
 
     enum ProcessState{
         P_CONNECT,
         P_DISCONNECT,
     };
 
+public:
+    QThread* _processThread;
+
 signals:
+    void ConnectRequest(NetworkType net_type, NetworkIPInfo net_ipinfo, string ssid, string pass);
+    void DisConnectRequest(NetworkType net_type);
     void ProcessStart(NetworkType net_type, ProcessState ps);
-    void ProcessEnd();
+    //void ProcessEnd();
 
 public slots:
     void ConnectEther();

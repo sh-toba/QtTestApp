@@ -21,7 +21,7 @@ public:
     string *_pass;
 
 public:
-    explicit NetworkSettingDialog(NetworkType net_type, NetworkSetting& ns, NetworkIPInfo *ipinfo, string *ssid, string *pass,QWidget *parent = 0);
+    explicit NetworkSettingDialog(NetworkType net_type, NetworkSetting* ns, NetworkIPInfo *ipinfo, string *ssid, string *pass,QWidget *parent = 0);
     ~NetworkSettingDialog();
 
 private slots:

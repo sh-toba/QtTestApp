@@ -1,7 +1,7 @@
 ﻿#include "networksettingdialog.h"
 #include "ui_networksettingdialog.h"
 
-NetworkSettingDialog::NetworkSettingDialog(NetworkType net_type, NetworkSetting& ns, NetworkIPInfo *ipinfo, string *ssid, string *pass,QWidget *parent) :
+NetworkSettingDialog::NetworkSettingDialog(NetworkType net_type, NetworkSetting* ns, NetworkIPInfo *ipinfo, string *ssid, string *pass,QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NetworkSettingDialog)
 {
@@ -20,7 +20,7 @@ NetworkSettingDialog::NetworkSettingDialog(NetworkType net_type, NetworkSetting&
     connect(ui->CloseButton, &QPushButton::clicked, this, &NetworkSettingDialog::reject);
 
     // IP情報をオブジェクトへ反映
-    NetworkIPInfo net_ipinfo = ns.GetIPInfo(net_type);
+    NetworkIPInfo net_ipinfo = ns->GetIPInfo(net_type);
     ui->DHCPCheckButton->setChecked(net_ipinfo._is_dhcp);
     DHCPOptionChanged();
     if(!Utills::CheckStr_NoInfo(net_ipinfo._ip))
@@ -38,11 +38,11 @@ NetworkSettingDialog::NetworkSettingDialog(NetworkType net_type, NetworkSetting&
 
         // アクセスポイント（SSID）の反映
         vector<string> ssid_list;
-        ssid_list = ns.GetSSIDList();
+        ssid_list = ns->GetSSIDList();
         for(auto it = ssid_list.begin(); it != ssid_list.end(); it++)
             ui->SelectSSIDBox->addItem(QString::fromStdString(*it));
 
-        string target_ssid = ns.GetTargetSSID();
+        string target_ssid = ns->GetTargetSSID();
         if(!Utills::CheckStr_NoInfo(target_ssid))
             ui->SelectSSIDBox->setCurrentText(QString::fromStdString(target_ssid));
     }

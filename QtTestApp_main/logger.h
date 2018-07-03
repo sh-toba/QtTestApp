@@ -7,6 +7,7 @@
 #include <fstream>
 #include <time.h>
 #include <sys/time.h>
+#include <QThread>
 
 #define FORMAT_STR_DATE "%d-%02d-%02d"
 #define FORMAT_STR_TIME "%02d:02d:02d"

@@ -4,25 +4,17 @@
 #include <QString>
 #include "utills.h"
 #include "system.h"
+#include <QObject>
 
 using namespace Utills;
 using namespace Systems;
 
-class NetworkSetting{
+class NetworkSetting : public QObject
+{
 
-private :
-    NetworkManager _nm; // ネットワークマネージャクラス
-    // デバイス名、接続状態、IPアドレス
-    map<NetworkType, tuple<string, NetworkState, NetworkIPInfo>> _state; // 接続状態
-    string _target_ssid; // 接続するSSID
-    vector<string> _ssid_list; // SSIDリスト
-
-private :
-    int _UpdateState();
-    int _ScanSSID();
-
+    Q_OBJECT
 public :
-    NetworkSetting();
+    explicit NetworkSetting(QObject *parent = 0);
     ~NetworkSetting();
 
     // 初期化
@@ -34,17 +26,39 @@ public :
     string GetTargetSSID(); // 接続対象のSSIDを返す
     vector<string> GetSSIDList(); // SSIDのリスト取得
 
-    // ネットワーク設定操作
-    int Connect(const NetworkType& net_type, const NetworkIPInfo& net_ipinfo, const string& ssid=NOINFORMATION, const string& pass=NOINFORMATION);
-    int DisConnect(const NetworkType& net_type); // 切断
-    int Reset(); // 接続状態の初期化
-
     // デバッグ用
     void ShowState();
     void ShowState(const NetworkType& net_type);
     void ShowSSIDList();
 
+// スロット
+public slots:
+    // ネットワーク設定操作
+    int Connect(NetworkType net_type, NetworkIPInfo net_ipinfo, string ssid=NOINFORMATION, string pass=NOINFORMATION);
+    int DisConnect(NetworkType net_type); // 切断
+    int Reset(); // 接続状態の初期化
+
+// シグナル
+signals:
+    void ProcessDone(); // プロセス終了通知
+
+private :
+    int _UpdateState();
+    int _ScanSSID();
+
+// メンバ変数
+private :
+    NetworkManager _nm; // ネットワークマネージャクラス
+    // デバイス名、接続状態、IPアドレス
+    map<NetworkType, tuple<string, NetworkState, NetworkIPInfo>> _state; // 接続状態
+    string _target_ssid; // 接続するSSID
+    vector<string> _ssid_list; // SSIDリスト
+
 };
+
+Q_DECLARE_METATYPE(NetworkType)
+Q_DECLARE_METATYPE(NetworkIPInfo)
+Q_DECLARE_METATYPE(string)
 
 #endif // NETWORKSETTING_H
 
