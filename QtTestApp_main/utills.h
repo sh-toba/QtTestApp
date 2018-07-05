@@ -13,6 +13,7 @@
 #include <QThread>
 #include <QString>
 #include <QPalette>
+#include <QTimer>
 
 using namespace std;
 

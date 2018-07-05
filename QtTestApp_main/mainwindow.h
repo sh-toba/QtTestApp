@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include "networksetting.h"
 
+#include "qtimertest.h"
+
 QT_BEGIN_NAMESPACE
 
 namespace Ui {
@@ -26,8 +28,13 @@ public:
 public slots:
     void OpenNetworkMenuDialog();
 
+    void ChangeState(int state);
+
 private:
     Ui::MainWindow *ui;
+
+    QTimerTest* _timer_test;
+    QThread* _test_thread;
     
     // 初期化処理
     void _Initialize();

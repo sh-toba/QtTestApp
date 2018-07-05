@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     utills.cpp \
     logger.cpp \
     networkmenudialog.cpp \
-    networksettingdialog.cpp
+    networksettingdialog.cpp \
+    qtimertest.cpp
 
 HEADERS  += mainwindow.h \
     system.h \
@@ -38,7 +39,8 @@ HEADERS  += mainwindow.h \
     utills.h \
     logger.h \
     networkmenudialog.h \
-    networksettingdialog.h
+    networksettingdialog.h \
+    qtimertest.h
 
 
 FORMS    += mainwindow.ui \
