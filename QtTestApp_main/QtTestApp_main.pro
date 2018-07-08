@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     logger.cpp \
     networkmenudialog.cpp \
     networksettingdialog.cpp \
-    qtimertest.cpp
+    qtimertest.cpp \
+    ecosettingdialog.cpp
 
 HEADERS  += mainwindow.h \
     system.h \
@@ -40,10 +41,12 @@ HEADERS  += mainwindow.h \
     logger.h \
     networkmenudialog.h \
     networksettingdialog.h \
-    qtimertest.h
+    qtimertest.h \
+    ecosettingdialog.h
 
 
 FORMS    += mainwindow.ui \
     networkmenudialog.ui \
-    networksettingdialog.ui
+    networksettingdialog.ui \
+    ecosettingdialog.ui
 

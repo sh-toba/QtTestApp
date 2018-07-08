@@ -1,4 +1,4 @@
-#ifndef NetworkManager_H
+﻿#ifndef NetworkManager_H
 #define NetworkManager_H
 
 #include "utills.h"
@@ -21,7 +21,7 @@ protected:
     // 読み込んだコマンドの標準出力の一時保存（一行づつ）
     std::vector<string> _cmd_buff;
 
-protected:
+public:
     // コマンド送信
     int _send_cmd(const string& cmd_str);
     // バッファ開放

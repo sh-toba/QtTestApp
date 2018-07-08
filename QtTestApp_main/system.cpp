@@ -20,8 +20,14 @@ int Systems::Command::_send_cmd(const string& cmd_str){
             _cmd_buff.push_back(tmp_str);
         }
         pclose(fp);
+
+        LOG_INFO("%s", "aaa");
+
         return 0;
     }
+
+    LOG_INFO("%s", "bbb");
+
     return -1;
 
 }

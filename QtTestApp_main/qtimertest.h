@@ -16,15 +16,21 @@ signals:
     void InformProgress(int state);
 
 public slots:
-    void StartTimer1_Request();
-    void StopTimer1_Request();
-    void WorkJob1();
-    void StartTimer1();
-    void StopTimer1();
+    void RestartTimer();
+    void StopTimer();
+
+    void SetConfig(bool is_available, int wait_time);
+
+private slots:
+    void WorkJob();
 
 private:
-    QTimer _timer1;
-    QTimer _timer2;
+    QTimer _timer;
+
+    bool _is_available;
+    int _wait_time;
+
+    bool _is_activated;
 
 };
 

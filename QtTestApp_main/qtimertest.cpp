@@ -1,54 +1,73 @@
 ﻿#include "qtimertest.h"
 
-QTimerTest::QTimerTest(QObject *parent) : QObject(parent), _timer1(this)
+QTimerTest::QTimerTest(QObject *parent) :
+    QObject(parent),
+    _timer(this),
+    _is_available(true),
+    _wait_time(30),
+    _is_activated(false)
 {
-    _timer1.setSingleShot(true);
+    _timer.setSingleShot(true);
 
-    connect(&_timer1, &QTimer::timeout, this, &QTimerTest::WorkJob1);
+    connect(&_timer, &QTimer::timeout, this, &QTimerTest::WorkJob);
+
+    RestartTimer();
 }
 
-void QTimerTest::StartTimer1_Request(){
-    LOG_DEBUG("%s", "-----Timer Start(Request)");
-    QMetaObject::invokeMethod(this, "StartTimer1", Qt::QueuedConnection);
-    return;
-}
+void QTimerTest::RestartTimer(){
 
+    if(_is_available){
+        //StopTimer();
 
-void QTimerTest::StartTimer1(){
+        // 機能中なら機能をオフに
+        if(_is_activated){
+            LOG_DEBUG("%s", "Function OFF");
+            _is_activated = false;
+            emit InformProgress(0);
+        }
 
-    LOG_DEBUG("%s", "-----Timer Start");
-    _timer1.start(2000);
-
-    emit InformProgress(0);
-
-    return;
-}
-
-void QTimerTest::StopTimer1_Request(){
-    LOG_DEBUG("%s", "-----Timer Stop(Request)");
-    QMetaObject::invokeMethod(this, "StopTimer1", Qt::QueuedConnection);
-    return;
-}
-
-void QTimerTest::StopTimer1(){
-
-    LOG_DEBUG("%s", "-----Timer Stop");
-    _timer1.stop();
-
-    emit InformProgress(-1);
+        LOG_DEBUG("%s", "Timer Start");
+        _timer.start(_wait_time * 1000);
+    }
 
     return;
 }
 
-void QTimerTest::WorkJob1(){
+void QTimerTest::StopTimer(){
+
+    if(_timer.isActive()){
+        LOG_DEBUG("%s", "Timer Stop");
+        _timer.stop();
+    }
+
+    return;
+}
+
+
+
+void QTimerTest::WorkJob(){
+
+    LOG_DEBUG("%s", "Function ON");
+    _is_activated = true;
 
     emit InformProgress(1);
 
-    LOG_DEBUG("%s", "Job Start-----");
-    QThread::sleep(10);
-    LOG_DEBUG("%s", "-----Job End");
-
-    emit InformProgress(2);
-
     return;
 }
+
+
+void QTimerTest::SetConfig(bool is_available, int wait_time){
+
+    StopTimer();
+
+    _is_available = is_available;
+    _wait_time = wait_time;
+
+    LOG_DEBUG("%s, [%d, %d]", "Change Config", _is_available, _wait_time);
+
+    RestartTimer();
+
+    return;
+
+}
+

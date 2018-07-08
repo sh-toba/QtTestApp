@@ -13,7 +13,7 @@
 #define FORMAT_STR_TIME "%02d:02d:02d"
 #define FORMAT_STR_TIME_MSEC "%02d:%02d:%02d.%06d"
 #define LOG_DIR std::string("/var/log/test/")
-#define LOG_LEVEL LogLevel::Debug
+#define LOG_LEVEL LogLevel::Info
 
 class LogLevel
 {
