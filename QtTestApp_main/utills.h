@@ -15,6 +15,8 @@
 #include <QPalette>
 #include <QTimer>
 
+#include <QMessageBox>
+
 using namespace std;
 
 #define MAX_BUFFER_LENGTH 1024
@@ -94,6 +96,16 @@ enum NetworkState{
     CONNECTED,
     UNAVAILABLE,
 };
+
+
+enum MessageState{
+    INFORMATION,
+    CONFIRMATION,
+    WARNING,
+    CRITICAL
+};
+
+int ShowMessageBox(const MessageState& msg_state, const QString& msg);
 
 /* *ToString関数
  * Network関連で上記を上手くまとめられると良かった

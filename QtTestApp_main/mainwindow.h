@@ -39,6 +39,12 @@ public slots:
 
     void ShowKeyBoard();
 
+    void MBoxInfoClicked();
+    void MBoxConfClicked();
+    void MBoxWarnClicked();
+    void MBoxCritClicked();
+
+
 private:
     Ui::MainWindow *ui;
 

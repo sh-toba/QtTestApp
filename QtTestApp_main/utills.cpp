@@ -155,6 +155,47 @@ void Utills::NetworkConnectInfo::Show(bool with_header){
 //-----End of NetworkConnectInfo Class
 
 
+
+int Utills::ShowMessageBox(const MessageState &msg_state, const QString &msg){
+
+
+    QMessageBox msgBox;
+    msgBox.setText(msg);
+
+    switch(msg_state){
+    case INFORMATION:
+        msgBox.setWindowTitle("Information");
+        msgBox.setStandardButtons(QMessageBox::Yes);
+        msgBox.setButtonText(QMessageBox::Yes, "閉じる");
+        msgBox.setIcon(QMessageBox::Icon::Information);
+        break;
+    case CONFIRMATION:
+        msgBox.setWindowTitle("Confirmation");
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+        msgBox.setButtonText(QMessageBox::Yes, "はい");
+        msgBox.setButtonText(QMessageBox::Cancel, "いいえ");
+        msgBox.setIcon(QMessageBox::Icon::Question);
+        break;
+    case WARNING:
+        msgBox.setWindowTitle("Warning");
+        msgBox.setStandardButtons(QMessageBox::Yes);
+        msgBox.setButtonText(QMessageBox::Yes, "閉じる");
+        msgBox.setIcon(QMessageBox::Icon::Warning);
+        break;
+    case CRITICAL:
+        msgBox.setWindowTitle("Error");
+        msgBox.setStandardButtons(QMessageBox::Yes);
+        msgBox.setButtonText(QMessageBox::Yes, "閉じる");
+        msgBox.setIcon(QMessageBox::Icon::Critical);
+        break;
+    }
+
+    int res = msgBox.exec();
+
+    return res;
+}
+
+
 // ToString関数
 string Utills::ToString(const NetworkType &net_type){
     switch(net_type){

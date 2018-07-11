@@ -55,6 +55,11 @@ void MainWindow::_Initialize(){
 
     connect(ui->KeyBoardOnButton, &QPushButton::clicked, this, &MainWindow::ShowKeyBoard);
 
+    connect(ui->MBoxInfo, &QPushButton::clicked, this, &MainWindow::MBoxInfoClicked);
+    connect(ui->MBoxConf, &QPushButton::clicked, this, &MainWindow::MBoxConfClicked);
+    connect(ui->MBoxWarn, &QPushButton::clicked, this, &MainWindow::MBoxWarnClicked);
+    connect(ui->MBoxCrit, &QPushButton::clicked, this, &MainWindow::MBoxCritClicked);
+
     _test_thread->start();
 
     return;
@@ -137,4 +142,40 @@ void MainWindow::mousePressEvent(QMouseEvent *event){
     return;
 }
 
+
+void MainWindow::MBoxInfoClicked(){
+
+    int ret = ShowMessageBox(MessageState::INFORMATION, "設定を適用しました。\n（メニューを閉じると反映されます）");
+
+    return;
+}
+
+void MainWindow::MBoxConfClicked(){
+
+    int ret = ShowMessageBox(MessageState::CONFIRMATION, "オプションを変更します。\nよろしいですか？");
+
+    if(ret == QMessageBox::Yes){
+        cout << "Yes" << endl;
+    }else{
+        cout << "No" << endl;
+    }
+
+    return;
+}
+
+
+void MainWindow::MBoxWarnClicked(){
+
+    int ret = ShowMessageBox(MessageState::WARNING, "無効な入力があります。\n 入力1：kfojiodjof\n 入力2：hufhidh \n 入力3：ｈっっっｓ");
+
+    return;
+}
+
+
+void MainWindow::MBoxCritClicked(){
+
+    int ret = ShowMessageBox(MessageState::CRITICAL, "エラーです。\n再起動してください");
+
+    return;
+}
 
